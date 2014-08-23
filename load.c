@@ -485,16 +485,16 @@ static int lex_scan_number(lex_t *lex, int c, json_error_t *error)
     }
 
     if(c != '.' && c != 'E' && c != 'e') {
-        json_int_t value;
+        json_int_t value_;
 
         lex_unget_unsave(lex, c);
 
         saved_text = strbuffer_value(&lex->saved_text);
 
         errno = 0;
-        value = json_strtoint(saved_text, &end, 10);
+        value_ = json_strtoint(saved_text, &end, 10);
         if(errno == ERANGE) {
-            if(value < 0)
+            if(value_ < 0)
                 error_set(error, lex, "too big negative integer");
             else
                 error_set(error, lex, "too big integer");
@@ -504,7 +504,7 @@ static int lex_scan_number(lex_t *lex, int c, json_error_t *error)
         assert(end == saved_text + lex->saved_text.length);
 
         lex->token = TOKEN_INTEGER;
-        lex->value.integer = value;
+        lex->value.integer = value_;
         return 0;
     }
 
